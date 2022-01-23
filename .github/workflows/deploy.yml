@@ -9,6 +9,13 @@ env:
   # Triggers the workflow on push request events but only for the main branch
   push:
     branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    # inputs:
+    #   region:
+    #     description: 'AWS Region to deploy to'
+    #     required: true
+    #     default: 'eu-west-1'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
