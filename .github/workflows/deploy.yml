@@ -56,5 +56,5 @@ jobs:
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: ${{ steps.env-name.outputs.environment }}-vpc
-        template: /stacks/foo-vpc.yaml
+        template: stacks/foo-vpc.yaml
         no-fail-on-empty-changeset: "1"
