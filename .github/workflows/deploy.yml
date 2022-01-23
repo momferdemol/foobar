@@ -1,4 +1,4 @@
-# This is a basic workflow to help deploy stacks with Actions
+# This is a basic workflow to help deploy CloudFormation stacks with Actions
 
 name: Deploy
 
@@ -9,11 +9,6 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    # inputs:
-    #   region:
-    #     description: 'AWS Region to deploy to'
-    #     required: true
-    #     default: 'eu-west-1'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -26,8 +21,6 @@ jobs:
     # Environment variable available for this job
     env:
       region: eu-west-1
-    outputs:
-      env-name: ${{ steps.env-name.outputs.environment }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -42,19 +35,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.region }}
 
-    - name: Configure environment name
-      id: env-name
-      env:
-        REPO: ${{ github.repository }}
-      run: |
-        ENVIRONMENT=`echo $REPO | tr "/" "-"`
-        echo "Environment name: $ENVIRONMENT"
-        echo "::set-output name=environment::$ENVIRONMENT"
-
     - name: Deploy to Foobar VPC with CloudFormation
       id: vpc-stack
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: ${{ steps.env-name.outputs.environment }}-vpc
+        name: foobar-vpc
         template: stacks/foo-vpc.yaml
         no-fail-on-empty-changeset: "1"
