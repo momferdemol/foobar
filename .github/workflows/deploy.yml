@@ -16,11 +16,19 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+
   # This workflow contains a single job called "deploy"
   deploy:
     name: Deploy VPC
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    inputs:
+      region:
+        description: 'AWS Region to deploy to'
+        required: true
+        default: 'eu-west-1'
+    outputs:
+      env-name: ${{ steps.env-name.outputs.environment }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -35,13 +43,19 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ github.event.inputs.region }}
 
+    - name: Configure environment name
+          id: env-name
+          env:
+            REPO: ${{ github.repository }}
+          run: |
+            ENVIRONMENT=`echo $REPO | tr "/" "-"`
+            echo "Environment name: $ENVIRONMENT"
+            echo "::set-output name=environment::$ENVIRONMENT"
+
     - name: Deploy to Foobar VPC with CloudFormation
       id: vpc-stack
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: ${{ steps.env-name.outputs.environment }}
+        name: ${{ steps.env-name.outputs.environment }}-vpc
         template: /stacks/foo-vpc.yaml
         no-fail-on-empty-changeset: "1"
-        parameter-overrides: >-
-          Name=${{ steps.env-name.outputs.environment }},
-          Repository=https://github.com/${{ github.repository }}
