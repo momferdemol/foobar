@@ -2,18 +2,13 @@
 
 name: Deploy
 
-inputs:
-  region:
-    description: 'AWS Region to deploy to'
-    required: true
-    default: 'eu-west-1'
-
 on:
+env:
+  region: eu-west-1
+
   # Triggers the workflow on push request events but only for the main branch
   push:
     branches: [ main ]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -37,7 +32,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ github.event.inputs.region }}
+        aws-region: ${ region }
 
     - name: Configure environment name
       id: env-name
